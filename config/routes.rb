@@ -3,8 +3,13 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :products do
+    resource :wishlist, only: [ :create ], module: :products
     resources :subscribers, only: [ :create ]
   end
+  resources :wishlists do
+    resources :wishlist_products, only: [ :update, :destroy ], module: :wishlists
+  end
+
   resource :unsubscribe, only: [ :show ]
   resource :sign_up
   namespace :settings do
@@ -21,6 +26,8 @@ Rails.application.routes.draw do
   namespace :store do
     resources :products
     resources :users
+    resources :wishlists
+    resources :subscribers, only: [ :index, :show, :destroy ]
 
     root to: redirect("/store/products")
   end
